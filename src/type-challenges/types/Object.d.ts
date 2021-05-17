@@ -1,5 +1,23 @@
 import { UnionToIntersection } from "./Union";
 
+/**
+ * 实现 Pick
+ * @example
+ * ```ts
+ * interface Todo {
+ *   title: string
+ *   description: string
+ *   completed: boolean
+ * }
+ *
+ * type TodoPreview = MyPick<Todo, 'title' | 'completed'>
+ *
+ * const todo: TodoPreview = {
+ *     title: 'Clean room',
+ *     completed: false,
+ * }
+ * ```
+ */
 export type Pick<T, K extends keyof T> = {
   [P in K]: T[P];
 };
@@ -16,14 +34,55 @@ export type DeepPick2<D, K> = K extends `${infer L}.${infer R}`
   ? { [kk in K]: D[K] }
   : unknown;
 
+/**
+ * 实现 Omit
+ * @example
+ * ```ts
+ * interface Todo {
+ *   title: string
+ *   description: string
+ *   completed: boolean
+ * }
+ *
+ * type TodoPreview = MyOmit<Todo, 'description' | 'title'>
+ *
+ * const todo: TodoPreview = {
+ *   completed: false,
+ * }
+ * ```
+ */
 export type Omit<T, K> = {
   [P in Exclude<keyof T, K>]: T[P];
 };
 
+/**
+ * 实现给对象添加属性
+ * @example
+ * ```ts
+ * type Test = { id: '1' }
+ * type Result = AppendToObject<Test, 'value', 4> // expected to be { id: '1', value: 4 }
+ * ```
+ */
 export type AppendToObject<T, U extends string, V> = {
   [P in U | keyof T]: P extends keyof T ? T[P] : V;
 };
 
+/**
+ * 实现两个对象的合并
+ * @example
+ * ```ts
+ * type Foo = {
+ *   a: number;
+ *   b: string;
+ * };
+ * type Bar = {
+ *   b: number;
+ * };
+ *
+
+ * Merge<Foo, Bar> // expected to be { a: number; b: number; }
+ * ```
+ */
 export type Merge<F, S> = {
   [K in keyof F | keyof S]: K extends keyof S
     ? S[K]
@@ -32,6 +91,23 @@ export type Merge<F, S> = {
     : never;
 };
 
+/**
+ * 实现 Diff
+ * @example
+ * ```ts
+ * type Foo = {
+ *   name: string
+ *   age: string
+ * }
+ * type Bar = {
+ *   name: string
+ *   age: string
+ *   gender: number
+ * }
+ *
+ * Diff<Foo, Bar> // { gender: number }
+ * ```
+ */
 export type Diff<O, O1> = {
   [K in
     | Exclude<keyof O, keyof O1>
@@ -42,12 +118,52 @@ export type Diff<O, O1> = {
     : never;
 };
 
-// 替换联合类型的对象中的部分key的类型
+/**
+ * 替换合集中的对象中的部分key的类型
+ * @example
+ * ```ts
+ * type NodeA = {
+ *   type: 'A'
+ *   name: string
+ *   flag: number
+ * }
+ *
+ * type NodeB = {
+ *   type: 'B'
+ *   id: number
+ *   flag: number
+ * }
+ *
+ * type NodeC = {
+ *   type: 'C'
+ *   name: string
+ *   flag: number
+ * }
+ *
+ *
+ * type Nodes = NodeA | NodeB | NodeC
+ *
+ * type ReplacedNodes = ReplaceKeys<Nodes, 'name' | 'flag', {name: number, flag: string}> // {type: 'A', name: number, flag: string} | {type: 'B', id: number, flag: string} | {type: 'C', name: number, flag: string} // would replace name from string to number, replace flag from number to string.
+ *
+ * type ReplacedNotExistKeys = ReplaceKeys<Nodes, 'name', {aa: number}> // {type: 'A', name: never} | NodeB | {type: 'C', name: never} // would replace name to never
+ * ```
+ */
 export type ReplaceKeys<U, T, Y> = {
   [k in keyof U]: k extends T ? (k extends keyof Y ? Y[k] : never) : U[k];
 };
 
-// 实现删除索引签名属性
+/**
+ * 实现删除索引签名属性
+ * @example
+ * ```ts
+ * type Foo = {
+ *   [key: string]: any;
+ *   foo(): void;
+ * }
+ *
+ * type A = RemoveIndexSignature<Foo>  // expected { foo(): void }
+ * ```
+ */
 export type RemoveIndexSignature<T> = {
   [K in keyof T as string extends K
     ? never

@@ -1,3 +1,10 @@
+/**
+ * 实现 TrimLeft
+ * @example
+ * ```ts
+ * type trimed = TrimLeft<'  Hello World  '> // expected to be 'Hello World  '
+ * ```
+ */
 export type TrimLeft<S extends string> = S extends `${
   | "\t"
   | "\n"
@@ -5,6 +12,13 @@ export type TrimLeft<S extends string> = S extends `${
   ? TrimLeft<R>
   : S;
 
+/**
+ * 实现 TrimRight
+ * @example
+ * ```ts
+ * type trimed = TrimRight<'  Hello World  '> // expected to be '  Hello World'
+ * ```
+ */
 export type TrimRight<S extends string> = S extends `${infer L}${
   | "\t"
   | "\n"
@@ -12,12 +26,33 @@ export type TrimRight<S extends string> = S extends `${infer L}${
   ? TrimRight<L>
   : S;
 
+/**
+ * 实现 Trim
+ * @example
+ * ```ts
+ * type trimed = Trim<'  Hello World  '> // expected to be 'Hello World'
+ * ```
+ */
 export type Trim<S extends string> = TrimRight<TrimLeft<S>>;
 
+/**
+ * 实现首字母大写
+ * @example
+ * ```ts
+ * type capitalized = Capitalize<'hello world'> // expected to be 'Hello world'
+ * ```
+ */
 export type Capitalize<S extends string> = S extends `${infer L}${infer R}`
   ? `${Uppercase<L>}${R}`
   : S;
 
+/**
+ * 实现Replace函数
+ * @example
+ * ```ts
+ * type replaced = Replace<'types are fun!', 'fun', 'awesome'> // expected to be 'types are awesome!'
+ * ```
+ */
 export type Replace<S extends string, From extends string, To extends string> =
   S extends `${infer L}${From}${infer R}`
     ? From extends ""
@@ -25,6 +60,13 @@ export type Replace<S extends string, From extends string, To extends string> =
       : `${L}${To}${R}`
     : S;
 
+/**
+ * 实现ReplaceAll函数
+ * @example
+ * ```ts
+ * type replaced = ReplaceAll<'t y p e s', ' ', ''> // expected to be 'types'
+ * ```
+ */
 export type ReplaceAll<
   S extends string,
   From extends string,
@@ -35,6 +77,16 @@ export type ReplaceAll<
     : `${L}${To}${ReplaceAll<R, From, To>}`
   : S;
 
+/**
+ * 实现获取字符串长度
+ * @example
+ * ```ts
+ * LengthOfString<''> // expected to be 0
+ * LengthOfString<'kumiko'> // expected to be 6
+ * LengthOfString<'reina'> // expected to be 5
+ * LengthOfString<'Sound! Euphonium'> // expected to be 16
+ * ```
+ */
 export type LengthOfString<S extends string, A extends any[] = []> =
   S extends `${infer C}${infer R}` ? LengthOfString<R, [C, ...A]> : A["length"];
 
@@ -48,6 +100,14 @@ export type LengthOfLongString<S extends string, R extends any[] = []> =
     ? LengthOfString<S2, [any, ...R]>
     : R["length"];
 
+/**
+ * 字符串转合集
+ * @example
+ * ```ts
+ * type Test = '123';
+ * type Result = StringToUnion<Test>; // expected to be "1" | "2" | "3"
+ * ```
+ */
 export type StringToUnion<T extends string> = T extends `${infer L}${infer R}`
   ? L | StringToUnion<R>
   : never;
@@ -80,6 +140,23 @@ export type az =
   | "y"
   | "z";
 
+/**
+ * 实现单词转驼峰格式
+ * @example
+ * ```ts
+ * CamelCase<'foo-bar-baz'> // 'fooBarBaz'
+ * CamelCase<'foo-Bar-Baz'> // 'foo-Bar-Baz'
+ * CamelCase<'foo-bar'> // 'fooBar'
+ * CamelCase<'foo_bar'> // 'foo_bar'
+ * CamelCase<'foo--bar----baz'> // 'foo-Bar---Baz'
+ * CamelCase<'a-b-c'> // 'aBC'
+ * CamelCase<'a-b-c-'> // 'aBC-'
+ * CamelCase<'ABC'> // 'ABC'
+ * CamelCase<'-'> // '-'
+ * CamelCase<''> // ''
+ * CamelCase<'😎'> // '😎'
+ * ```
+ */
 export type CamelCase<S extends string> =
   S extends `${infer L}-${infer M}${infer R}`
     ? M extends az
@@ -117,17 +194,36 @@ export type AZ =
   | "Y"
   | "Z";
 
-export type KebabCase2<S extends string> = S extends `${infer L}${infer R}`
-  ? L extends AZ
-    ? `-${Lowercase<L>}${KebabCase2<R>}`
-    : `${L}${KebabCase2<R>}`
-  : "";
-
+/**
+ * 实现单词转连线形式
+ * @example
+ * ```ts
+ * KebabCase<'FooBarBaz'> // 'foo-bar-baz'
+ * KebabCase<'fooBarBaz'> // 'foo-bar-baz'
+ * KebabCase<'foo-bar'> // 'foo-bar'
+ * KebabCase<'foo_bar'> // 'foo_bar'
+ * KebabCase<'Foo-Bar'> // 'foo--bar'
+ * KebabCase<'ABC'> // 'a-b-c'
+ * KebabCase<'-'> // '-'
+ * KebabCase<''> // ''
+ * KebabCase<'😎'> // '😎'
+ * ```
+ */
 export type KebabCase<S extends string> = S extends `${infer L}${infer R}`
   ? L extends AZ
-    ? `${Lowercase<L>}${KebabCase2<R>}`
-    : `${L}${KebabCase2<R>}`
+    ? `${Lowercase<L>}${KebabCaseWithDash<R>}`
+    : `${L}${KebabCaseWithDash<R>}`
   : "";
+
+/**
+ * 大写字母转小写字母+短横线
+ */
+export type KebabCaseWithDash<S extends string> =
+  S extends `${infer L}${infer R}`
+    ? L extends AZ
+      ? `-${Lowercase<L>}${KebabCaseWithDash<R>}`
+      : `${L}${KebabCaseWithDash<R>}`
+    : "";
 
 // 实现单词首字母大写
 export type CapitalizeWords1<S extends string> =
