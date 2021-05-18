@@ -26,18 +26,7 @@ export type Permutation<T, K = T> = [T] extends [never]
  * @example
  *
  * ```ts
- * interface Todo {
- *   title: string
- *   description: string
- *   completed: boolean
- * }
- *
- * type TodoPreview = MyPick<Todo, 'title' | 'completed'>
- *
- * const todo: TodoPreview = {
- *     title: 'Clean room',
- *     completed: false,
- * }
+ * type I = Union2Intersection<'foo' | 42 | true> // expected to be 'foo' & 42 & true
  * ```
  */
 export type UnionToIntersection<U> = (

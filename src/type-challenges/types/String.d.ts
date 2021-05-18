@@ -166,6 +166,25 @@ export type CamelCase<S extends string> =
       : `${L}-${M}${CamelCase<R>}`
     : S;
 
+/**
+ * 先转小写，再转驼峰
+ * @example
+ * ```ts
+ * CamelCase<'foobar'> // 'foobar'
+ * CamelCase<'FOOBAR'> // 'foobar'
+ * CamelCase<'foo_bar'> // 'fooBar'
+ * CamelCase<'foo_bar_hello_world'> // 'fooBarHelloWorld'
+ * CamelCase<'HELLO_WORLD_WITH_TYPES'> // 'helloWorldWithTypes'
+ * CamelCase<''> // ''
+ * ```
+ */
+export type CamelCaseWords<S extends string> = CamelCase1<Lowercase<S>>;
+// 实现单词驼峰格式
+export type CamelCase1<S extends string> =
+  S extends `${infer L}_${infer M}${infer R}`
+    ? `${L}${Uppercase<M>}${CamelCase1<R>}`
+    : S;
+
 export type AZ =
   | "A"
   | "B"
@@ -225,6 +244,15 @@ export type KebabCaseWithDash<S extends string> =
       : `${L}${KebabCaseWithDash<R>}`
     : "";
 
+/**
+ * 单词首字母大写
+ * @example
+ * ```ts
+ * CapitalizeWords<'hello world, my friends'> // expected to be 'Hello World, My Friends'
+ * ```
+ */
+export type CapitalizeWords<S extends string> = Capitalize<CapitalizeWords1<S>>;
+
 // 实现单词首字母大写
 export type CapitalizeWords1<S extends string> =
   S extends `${infer L}${infer M}${infer R}`
@@ -233,17 +261,16 @@ export type CapitalizeWords1<S extends string> =
       : `${L}${CapitalizeWords1<`${M}${R}`>}`
     : S;
 
-export type CapitalizeWords<S extends string> = Capitalize<CapitalizeWords1<S>>;
-
-// 实现单词驼峰格式
-export type CamelCase1<S extends string> =
-  S extends `${infer L}_${infer M}${infer R}`
-    ? `${L}${Uppercase<M>}${CamelCase1<R>}`
-    : S;
-
-export type CamelCaseWords<S extends string> = CamelCase1<Lowercase<S>>;
-
-// 实现字符串转数字
+/**
+ * 实现字符串转数字
+ * @example
+ * ```ts
+ * ToNumber<'0'> // 0
+ * ToNumber<'5'> // 5
+ * ToNumber<'12'> // 12
+ * ToNumber<'27'> // 27
+ * ```
+ */
 export type ToNumber<S extends string, T extends any[] = []> =
   S extends `${T["length"]}` ? T["length"] : ToNumber<S, [any, ...T]>;
 

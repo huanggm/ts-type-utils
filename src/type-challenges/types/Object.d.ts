@@ -172,33 +172,71 @@ export type RemoveIndexSignature<T> = {
     : K]: T[K];
 };
 
-// 实现获取必须字段
-// https://github.com/type-challenges/type-challenges/issues/1087
+/**
+ * 实现获取必须字段 - 返回对象
+ * https://github.com/type-challenges/type-challenges/issues/1087
+ * @example
+ * ```ts
+ * GetRequired<{ foo: number, bar?: string }> // expected to be { foo: number }
+ * ```
+ */
+export type GetRequired<T> = Pick<T, RequiredKeys<T>>;
 
-// 实现获取可选字段
-export type GetOptionalObjKeys<T, K = keyof T> = K extends keyof T
-  ? Omit<T, K> extends T
-    ? K
-    : never
-  : never;
+// 实现获取可选字段 - 返回对象
+/**
+ * @example
+ * ```ts
+ * GetOptional<{ foo: number, bar?: string }> // expected to be { bar?: string }
+ * ```
+ */
+export type GetOptional<T> = Pick<T, OptionalKeys<T>>;
 
-export type GetOptional<T> = Pick<T, GetOptionalObjKeys<T>>;
-
-// 实现获取必填字段
+/**
+ * 实现获取必填字段 - 返回合集
+ * @example
+ * ```ts
+ * RequiredKeys<{ foo: number; bar?: string }>; // expected to be "foo"
+ * ```
+ */
 export type RequiredKeys<T, K = keyof T> = K extends keyof T
   ? Omit<T, K> extends T
     ? never
     : K
   : never;
 
-// 实现获取可选字段
+/**
+ * 实现获取可选字段 - 返回合集
+ * @example
+ * ```ts
+ * OptionalKeys<{ a: undefined, b?: undefined, c?: string, d?: null }>; // expected to be "b" | "c" | "d"
+ * ```
+ */
 export type OptionalKeys<T, K = keyof T> = K extends keyof T
   ? Omit<T, K> extends T
     ? K
     : never
   : never;
 
-// 实现Get函数
+/**
+ * 实现Get函数
+ * @example
+ * ```ts
+ * type Data = {
+ *   foo: {
+ *     bar: {
+ *       value: 'foobar',
+ *       count: 6,
+ *     },
+ *     included: true,
+ *   },
+ *   hello: 'world'
+ * }
+ *
+ * type A = Get<Data, 'hello'> // 'world'
+ * type B = Get<Data, 'foo.bar.count'> // 6
+ * type C = Get<Data, 'foo.bar'> // { value: 'foobar', count: 6 }
+ * ```
+ */
 export type Get<T, K> = K extends `${infer L}.${infer R}`
   ? L extends keyof T
     ? Get<T[L], R>

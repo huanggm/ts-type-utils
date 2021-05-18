@@ -132,7 +132,18 @@ export type AnyOf<T extends readonly any[]> = T[number] extends False
   ? false
   : true;
 
-// 实现过滤函数
+/**
+ * 实现过滤函数
+ * @example
+ * ```ts
+ * FilterOut<[], never> // []
+ * FilterOut<[never], never> // []
+ * FilterOut<['a', never], never> // ['a']
+ * FilterOut<[1, never, 'a'], never> // [1, 'a']
+ * FilterOut<[never, 1, 'a', undefined, false, null], never | null | undefined> // [1, 'a', false]
+ * FilterOut<[number | null | undefined, never], never | null | undefined> // [number | null | undefined]
+ * ```
+ */
 export type FilterOut<T extends any[], F> = T extends [
   f: infer S1,
   ...l: infer S2
