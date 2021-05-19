@@ -90,7 +90,13 @@ export type ReplaceAll<
 export type LengthOfString<S extends string, A extends any[] = []> =
   S extends `${infer C}${infer R}` ? LengthOfString<R, [C, ...A]> : A["length"];
 
-// 获取字符串长度
+/**
+ * 获取超长字符串的长度，因为ts中递归最多45次
+ * @example
+ * ```ts
+ * LengthOfString<"aaaaaaaaaaaaggggggggggggggggggggkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"> // 272
+ * ```
+ */
 export type LengthOfLongString<S extends string, R extends any[] = []> =
   S extends `${infer S1}${infer S2}${infer S3}${infer S4}${infer S5}${infer S6}${infer S7}${infer S8}`
     ? LengthOfString<S8, [any, any, any, any, any, any, any, ...R]>
@@ -274,7 +280,16 @@ export type CapitalizeWords1<S extends string> =
 export type ToNumber<S extends string, T extends any[] = []> =
   S extends `${T["length"]}` ? T["length"] : ToNumber<S, [any, ...T]>;
 
-// 实现Printf函数
+/**
+ * 实现Printf函数
+ * @example
+ * ```ts
+ * Equal<Format<'abc'> // string
+ * Equal<Format<'a%sbc'> // (s1: string) => string
+ * Equal<Format<'a%dbc'> // (d1: number) => string
+ * Equal<Format<'a%dbc%s'> // (d1: number) => (s1: string) => string
+ * ```
+ */
 export type Format<T extends string> =
   T extends `${infer S1}%${infer S2}${infer S3}`
     ? S2 extends "d"
@@ -284,6 +299,30 @@ export type Format<T extends string> =
       : never
     : string;
 
+/**
+ * 实现join函数
+ * @example
+ * ```ts
+ * // Edge cases
+ * const noCharsOutput = join('-')();
+ * const oneCharOutput = join('-')('a');
+ * const noDelimiterOutput = join('')('a', 'b', 'c');
+ *
+ * // Regular cases
+ * const hyphenOutput = join('-')('a', 'b', 'c');
+ * const hashOutput = join('#')('a', 'b', 'c');
+ * const twoCharOutput = join('-')('a', 'b');
+ * const longOutput = join('-')('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h');
+ *
+ * typeof noCharsOutput // ''
+ * typeof oneCharOutput // 'a'
+ * typeof noDelimiterOutput // 'abc'
+ * typeof twoCharOutput // 'a-b'
+ * typeof hyphenOutput // 'a-b-c'
+ * typeof hashOutput // 'a#b#c'
+ * typeof longOutput // 'a-b-c-d-e-f-g-h'
+ * ```
+ */
 export type JoinType<T extends string, P, R extends string = ""> = P extends []
   ? R
   : P extends string[]

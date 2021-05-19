@@ -24,7 +24,6 @@ export type Permutation<T, K = T> = [T] extends [never]
 
 /**
  * @example
- *
  * ```ts
  * type I = Union2Intersection<'foo' | 42 | true> // expected to be 'foo' & 42 & true
  * ```
@@ -34,3 +33,25 @@ export type UnionToIntersection<U> = (
 ) extends (arg: infer I) => void
   ? I
   : never;
+
+/**
+ * @example
+ * ```ts
+ * LastInUnion<1 | 2> // 2
+ * ```
+ */
+export type LastInUnion<U> = UnionToIntersection<
+  U extends unknown ? (x: U) => 0 : never
+> extends (x: infer L) => 0
+  ? L
+  : never;
+
+/**
+ * @example
+ * ```ts
+ * UnionToTuple<1 | 2> // [1, 2]
+ * ```
+ */
+export type UnionToTuple<U, Last = LastInUnion<U>> = [U] extends [never]
+  ? []
+  : [...UnionToTuple<Exclude<U, Last>>, Last];

@@ -7,7 +7,7 @@
  *   description: string
  * }
  *
- * const todo: MyReadonly<Todo> = {
+ * const todo: Readonly<Todo> = {
  *   title: "Hey",
  *   description: "foobar"
  * }
