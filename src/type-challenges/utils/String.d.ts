@@ -97,14 +97,17 @@ export type LengthOfString<S extends string, A extends any[] = []> =
  * LengthOfString<"aaaaaaaaaaaaggggggggggggggggggggkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"> // 272
  * ```
  */
-export type LengthOfLongString<S extends string, R extends any[] = []> =
-  S extends `${infer S1}${infer S2}${infer S3}${infer S4}${infer S5}${infer S6}${infer S7}${infer S8}`
-    ? LengthOfString<S8, [any, any, any, any, any, any, any, ...R]>
-    : S extends `${infer S1}${infer S2}${infer S3}${infer S4}`
-    ? LengthOfString<S4, [any, any, any, ...R]>
-    : S extends `${infer S1}${infer S2}`
-    ? LengthOfString<S2, [any, ...R]>
-    : R["length"];
+export type LengthOfLongString<S extends string> =
+  LongStringToTuple<S>["length"];
+
+export type LongStringToTuple<S extends string> =
+  S extends `${infer A}${infer B}${infer C}${infer D}${infer E}${infer F}${infer G}${infer H}${infer I}${infer J}${infer K}${infer L}${infer O}`
+    ? [A, B, C, D, E, F, G, H, I, J, K, L, ...LongStringToTuple<O>]
+    : S extends `${infer A}${infer B}${infer C}${infer D}${infer E}${infer F}${infer G}${infer H}${infer I}`
+    ? [A, B, C, D, E, F, G, H, ...LongStringToTuple<I>]
+    : S extends `${infer A}${infer B}`
+    ? [A, ...LongStringToTuple<B>]
+    : [];
 
 export type az =
   | "a"
@@ -172,7 +175,9 @@ export type CamelCase<S extends string> =
  * CamelCase<''> // ''
  * ```
  */
-export type CamelCaseWords<S extends string> = CamelCaseWordsReturn<Lowercase<S>>;
+export type CamelCaseWords<S extends string> = CamelCaseWordsReturn<
+  Lowercase<S>
+>;
 // 实现单词驼峰格式
 export type CamelCaseWordsReturn<S extends string> =
   S extends `${infer L}_${infer M}${infer R}`
@@ -245,7 +250,9 @@ export type KebabCaseWithDash<S extends string> =
  * CapitalizeWords<'hello world, my friends'> // expected to be 'Hello World, My Friends'
  * ```
  */
-export type CapitalizeWords<S extends string> = Capitalize<CapitalizeWordsReturn<S>>;
+export type CapitalizeWords<S extends string> = Capitalize<
+  CapitalizeWordsReturn<S>
+>;
 
 // 实现单词首字母大写
 export type CapitalizeWordsReturn<S extends string> =
