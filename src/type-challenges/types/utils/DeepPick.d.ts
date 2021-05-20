@@ -32,11 +32,11 @@ import { UnionToIntersection } from "./Transform";
  * ```
  */
 export type DeepPick<D, Keys> = UnionToIntersection<
-  Keys extends infer K ? DeepPick2<D, K> : never
+  Keys extends infer K ? DeepPickSingleObject<D, K> : never
 >;
-export type DeepPick2<D, K> = K extends `${infer L}.${infer R}`
+export type DeepPickSingleObject<D, K> = K extends `${infer L}.${infer R}`
   ? L extends keyof D
-    ? { [ll in L]: DeepPick2<D[L], R> }
+    ? { [ll in L]: DeepPickSingleObject<D[L], R> }
     : unknown
   : K extends keyof D
   ? { [kk in K]: D[K] }

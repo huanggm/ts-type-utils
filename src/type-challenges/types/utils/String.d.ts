@@ -172,11 +172,11 @@ export type CamelCase<S extends string> =
  * CamelCase<''> // ''
  * ```
  */
-export type CamelCaseWords<S extends string> = CamelCase1<Lowercase<S>>;
+export type CamelCaseWords<S extends string> = CamelCaseWordsReturn<Lowercase<S>>;
 // 实现单词驼峰格式
-export type CamelCase1<S extends string> =
+export type CamelCaseWordsReturn<S extends string> =
   S extends `${infer L}_${infer M}${infer R}`
-    ? `${L}${Uppercase<M>}${CamelCase1<R>}`
+    ? `${L}${Uppercase<M>}${CamelCaseWordsReturn<R>}`
     : S;
 
 export type AZ =
@@ -245,14 +245,14 @@ export type KebabCaseWithDash<S extends string> =
  * CapitalizeWords<'hello world, my friends'> // expected to be 'Hello World, My Friends'
  * ```
  */
-export type CapitalizeWords<S extends string> = Capitalize<CapitalizeWords1<S>>;
+export type CapitalizeWords<S extends string> = Capitalize<CapitalizeWordsReturn<S>>;
 
 // 实现单词首字母大写
-export type CapitalizeWords1<S extends string> =
+export type CapitalizeWordsReturn<S extends string> =
   S extends `${infer L}${infer M}${infer R}`
     ? L extends " " | "." | ","
-      ? `${L}${Uppercase<M>}${CapitalizeWords1<R>}`
-      : `${L}${CapitalizeWords1<`${M}${R}`>}`
+      ? `${L}${Uppercase<M>}${CapitalizeWordsReturn<R>}`
+      : `${L}${CapitalizeWordsReturn<`${M}${R}`>}`
     : S;
 
 /**

@@ -14,7 +14,7 @@
  * ParsePrintFormat<'The result is %'> // []
  * ```
  */
-export type ParsePrintFormat<S extends string> = ParsePrintFormat1<Shrink<S>>;
+export type ParsePrintFormat<S extends string> = ParsePrintFormatReturn<Shrink<S>>;
 
 type ControlsMap = {
   c: "char";
@@ -30,11 +30,11 @@ export type Shrink<S extends string> = S extends `${infer L}%%${infer R}`
   ? `${L}${R}`
   : S;
 
-export type ParsePrintFormat1<S extends string> =
+export type ParsePrintFormatReturn<S extends string> =
   S extends `${infer L}%${infer M}${infer R}`
     ? M extends keyof ControlsMap
-      ? [ControlsMap[M], ...ParsePrintFormat1<R>]
-      : ParsePrintFormat1<R>
+      ? [ControlsMap[M], ...ParsePrintFormatReturn<R>]
+      : ParsePrintFormatReturn<R>
     : [];
 
 /**
