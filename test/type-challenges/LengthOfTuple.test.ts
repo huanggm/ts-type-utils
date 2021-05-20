@@ -1,4 +1,4 @@
-import { LengthOfTuple } from "../../index";
+import { LengthOfTuple as Length } from "../../index";
 
 import { Equal, Expect } from "@type-challenges/utils";
 
@@ -12,6 +12,6 @@ const spaceX = [
 ] as const;
 
 type cases = [
-  Expect<Equal<LengthOfTuple<typeof tesla>, 4>>,
-  Expect<Equal<LengthOfTuple<typeof spaceX>, 5>>
+  Expect<Equal<Length<typeof tesla>, 4>>,
+  Expect<Equal<Length<typeof spaceX>, 5>>
 ];

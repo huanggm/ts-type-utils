@@ -4,6 +4,7 @@ export * from "./utils/DeepObjectToUniq";
 export * from "./utils/DeepPick";
 export * from "./utils/IsAny";
 export * from "./utils/IsNever";
+export * from "./utils/IsUnion";
 export * from "./utils/lib.es5";
 export * from "./utils/LookUp";
 export * from "./utils/Object";

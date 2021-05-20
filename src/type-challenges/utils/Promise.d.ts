@@ -29,6 +29,6 @@ export type AwaitedArray<T extends any[]> = {
  * const p = Promise.all([promise1, promise2, promise3] as const)
  * ```
  */
-export function PromiseAll<T extends any[]>(
+export declare function PromiseAll<T extends any[]>(
   values: readonly [...T]
 ): Promise<AwaitedArray<T>>;
