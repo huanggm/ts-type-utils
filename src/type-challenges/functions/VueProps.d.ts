@@ -35,13 +35,13 @@
  */
 export function VueBasicProps<P, D, C, M>(options: Options<P, D, C, M>): any;
 
-type Tuple2Union<T> = T extends Array<any> ? T[number] : T;
+export type Tuple2Union<T> = T extends Array<any> ? T[number] : T;
 
-type ComputedValueType<C> = {
+export type ComputedValueType<C> = {
   [P in keyof C]: C[P] extends () => infer R ? R : never;
 };
 
-type Basic<T> = T extends (...args: any) => infer R
+export type Basic<T> = T extends (...args: any) => infer R
   ? R
   : T extends new (...args: any) => infer R
   ? R
@@ -49,7 +49,7 @@ type Basic<T> = T extends (...args: any) => infer R
   ? { [K in keyof T]: Basic<T[K]> }
   : T;
 
-type PropsType2<P> = {
+export type PropsType<P> = {
   [K in keyof P]: P[K] extends (...args: any) => infer R
     ? R
     : P[K] extends new (...args: any) => infer R
@@ -59,9 +59,9 @@ type PropsType2<P> = {
     : any;
 };
 
-type Options<P, D, C, M> = {
+export type Options<P, D, C, M> = {
   props: P;
-  data: (this: PropsType2<P>) => D;
-  computed: C & ThisType<D & C & PropsType2<P>>;
-  methods: M & ThisType<D & ComputedValueType<C> & M & PropsType2<P>>;
+  data: (this: PropsType<P>) => D;
+  computed: C & ThisType<D & C & PropsType<P>>;
+  methods: M & ThisType<D & ComputedValueType<C> & M & PropsType<P>>;
 };
