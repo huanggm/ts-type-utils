@@ -7,7 +7,8 @@ type cases = [
   Expect<Equal<If<false, "a", 2>, 2>>
 ];
 
+// return 1 or 2 by strict:true
 type aaa = null extends boolean ? 1 : 2;
 
 // @ts-expect-error
-type error = If<123, "a", "b">;
+type error = If<null, "a", "b">;
