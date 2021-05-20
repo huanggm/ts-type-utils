@@ -106,18 +106,6 @@ export type LengthOfLongString<S extends string, R extends any[] = []> =
     ? LengthOfString<S2, [any, ...R]>
     : R["length"];
 
-/**
- * 字符串转合集
- * @example
- * ```ts
- * type Test = '123';
- * type Result = StringToUnion<Test>; // expected to be "1" | "2" | "3"
- * ```
- */
-export type StringToUnion<T extends string> = T extends `${infer L}${infer R}`
-  ? L | StringToUnion<R>
-  : never;
-
 export type az =
   | "a"
   | "b"
@@ -266,38 +254,6 @@ export type CapitalizeWords1<S extends string> =
       ? `${L}${Uppercase<M>}${CapitalizeWords1<R>}`
       : `${L}${CapitalizeWords1<`${M}${R}`>}`
     : S;
-
-/**
- * 实现字符串转数字
- * @example
- * ```ts
- * ToNumber<'0'> // 0
- * ToNumber<'5'> // 5
- * ToNumber<'12'> // 12
- * ToNumber<'27'> // 27
- * ```
- */
-export type ToNumber<S extends string, T extends any[] = []> =
-  S extends `${T["length"]}` ? T["length"] : ToNumber<S, [any, ...T]>;
-
-/**
- * 实现Printf函数
- * @example
- * ```ts
- * Equal<Format<'abc'> // string
- * Equal<Format<'a%sbc'> // (s1: string) => string
- * Equal<Format<'a%dbc'> // (d1: number) => string
- * Equal<Format<'a%dbc%s'> // (d1: number) => (s1: string) => string
- * ```
- */
-export type Format<T extends string> =
-  T extends `${infer S1}%${infer S2}${infer S3}`
-    ? S2 extends "d"
-      ? (a: number) => Format<S3>
-      : S2 extends "s"
-      ? (a: string) => Format<S3>
-      : never
-    : string;
 
 /**
  * 实现join函数

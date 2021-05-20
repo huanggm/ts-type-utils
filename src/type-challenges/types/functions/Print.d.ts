@@ -36,3 +36,22 @@ export type ParsePrintFormat1<S extends string> =
       ? [ControlsMap[M], ...ParsePrintFormat1<R>]
       : ParsePrintFormat1<R>
     : [];
+
+/**
+ * 实现Printf函数
+ * @example
+ * ```ts
+ * Equal<Format<'abc'> // string
+ * Equal<Format<'a%sbc'> // (s1: string) => string
+ * Equal<Format<'a%dbc'> // (d1: number) => string
+ * Equal<Format<'a%dbc%s'> // (d1: number) => (s1: string) => string
+ * ```
+ */
+export type Format<T extends string> =
+  T extends `${infer S1}%${infer S2}${infer S3}`
+    ? S2 extends "d"
+      ? (a: number) => Format<S3>
+      : S2 extends "s"
+      ? (a: string) => Format<S3>
+      : never
+    : string;

@@ -1,26 +1,4 @@
 /**
- * 元组转换为对象
- * @example
- * ```ts
- * const tuple = ['tesla', 'model 3', 'model X', 'model Y'] as const
- * const result: TupleToObject<typeof tuple> // expected { tesla: 'tesla', 'model 3': 'model 3', 'model X': 'model X', 'model Y': 'model Y'}
- * ```
- */
-export type TupleToObject<T extends readonly any[]> = {
-  [P in T[number]]: P;
-};
-
-/**
- * 元组转合集
- * @example
- * ```ts
- * type Arr = ['1', '2', '3']
- * const a: TupleToUnion<Arr> // expected to be '1' | '2' | '3'
- * ```
- */
-export type TupleToUnion<T extends readonly any[]> = T[number];
-
-/**
  * 元组中第一个元素
  * @example
  * ```ts
