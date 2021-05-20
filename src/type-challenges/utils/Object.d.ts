@@ -1,3 +1,5 @@
+import { Equal } from "@type-challenges/utils";
+
 /**
  * 实现获取必须字段 - 返回对象
  * https://github.com/type-challenges/type-challenges/issues/1087
@@ -159,3 +161,37 @@ export type RemoveIndexSignature<T> = {
     ? never
     : K]: T[K];
 };
+
+/**
+ * 获取只读字段
+ * 利用的是对比Readonly对象的每个字段是否Equal
+ * 还有一种思路是对比删除readonly属性的字段是否Equal
+ * @example
+ * ```ts
+ * interface Todo1 {
+ *   readonly title: string
+ *   description: string
+ *   completed: boolean
+ * }
+ *
+ * interface Todo2 {
+ *   readonly title: string
+ *   readonly description: string
+ *   completed?: boolean
+ * }
+ *
+ * type cases = [
+ *   Expect<Equal<'title', GetReadonlyKeys<Todo1>>>,
+ *   Expect<Equal<'title' | 'description', GetReadonlyKeys<Todo2>>>,
+ * ]
+ * ```
+ */
+export type GetReadonlyKeys<
+  T,
+  U extends Readonly<T> = Readonly<T>,
+  K extends keyof T = keyof T
+> = K extends keyof T
+  ? Equal<Pick<T, K>, Pick<U, K>> extends true
+    ? K
+    : never
+  : never;
